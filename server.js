@@ -5,6 +5,12 @@ const axios = require('axios')
 const pretty = require('pretty')
 require('dotenv')
 
+const cors = require('cors');
+const app = express();
+app.use(cors({
+  origin: 'http://localhost:3000' // Allow only your domain
+}));
+
 app.use(express.json())
 
 app.get('/', async (req, res) => {
