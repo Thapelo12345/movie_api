@@ -7,6 +7,8 @@ require('dotenv')
 
 app.use(express.json())
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 app.get('/', async (req, res) => {
   try {
 var id_counter = 0;
@@ -27,6 +29,7 @@ const itemObj = []
       const movieUrl = 'https://www.themoviedb.org' + $(element).attr('href');
 
       // Fetch the second HTML page
+      await delay(500);
       const response1 = await axios(movieUrl);
       const html1 = response1.data;
 
