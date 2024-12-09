@@ -4,12 +4,13 @@ const cheerio = require('cheerio')
 const axios = require('axios')
 const pretty = require('pretty')
 require('dotenv')
-var id_counter = 0;
 
 app.use(express.json())
 
 app.get('/', async (req, res) => {
   try {
+var id_counter = 0;
+
 const itemObj = []
 
     // Fetch the main page
