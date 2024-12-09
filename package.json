@@ -1,0 +1,25 @@
+{
+  "name": "movie-api",
+  "version": "1.0.0",
+  "description": "and app the gets movie information",
+  "main": "server.js",
+  "scripts": {
+    "devStart": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "movies"
+  ],
+  "author": "Thapelo Petrick Skhosana",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "pretty": "^2.0.0"
+  }
+}
