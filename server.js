@@ -1,12 +1,10 @@
 const express = require('express')
-const cors = require('cors');
 const app = express()
 const cheerio = require('cheerio')
 const axios = require('axios')
 const pretty = require('pretty')
 require('dotenv')
-
-app.use(cors({origin: 'http://localhost:3000'}));
+var id_counter = 0;
 
 app.use(express.json())
 
@@ -34,6 +32,7 @@ const itemObj = []
       const $1 = cheerio.load(html1);
 
       // Extract some data from the second page
+      let id = ++id_counter
       let title = $1('h2 a').text()
       const picUrl = $1('div.poster')
       .find('div.image_content')
@@ -46,7 +45,7 @@ const itemObj = []
       const genres = []
       $1('span.genres').find('a').each((index, item)=>{genres.push($1(item).text())})
 
-      itemObj.push({title, picUrl, description, year, genres})
+      itemObj.push({id, title, picUrl, description, year, genres})
 
     }//end of 4 loop
 
