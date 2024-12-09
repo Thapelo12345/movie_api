@@ -1,15 +1,12 @@
 const express = require('express')
+const cors = require('cors');
 const app = express()
 const cheerio = require('cheerio')
 const axios = require('axios')
 const pretty = require('pretty')
 require('dotenv')
 
-const cors = require('cors');
-
-app.use(cors({
-  origin: 'http://localhost:3000' // Allow only your domain
-}));
+app.use(cors({origin: 'http://localhost:3000'}));
 
 app.use(express.json())
 
