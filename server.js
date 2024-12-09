@@ -14,7 +14,7 @@ var id_counter = 0;
 const itemObj = []
 
     // Fetch the main page
-    const response = await axios('https://www.themoviedb.org/movie');
+    const response = await axios('https://www.themoviedb.org/movie') 
     const html = response.data;
     const $ = cheerio.load(html);
 
