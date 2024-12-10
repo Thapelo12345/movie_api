@@ -3,8 +3,10 @@ const app = express()
 const cheerio = require('cheerio')
 const axios = require('axios')
 const pretty = require('pretty')
+const cors = require('cors')
 require('dotenv')
 
+app.use(cors());
 app.use(express.json())
 
 // const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
