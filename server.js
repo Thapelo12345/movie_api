@@ -9,9 +9,6 @@ require('dotenv').config()
 app.use(cors());
 app.use(express.json())
 
-// const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-
 app.get('/', async (req, res) => {
   try {
     const idCounter = { current: 0 }; // Counter for unique IDs
@@ -45,12 +42,14 @@ app.get('/', async (req, res) => {
           .attr('src');
         const description = $1('div.overview p').text();
         const year = $1('h2 span.tag.release_date').text();
+        const age = $1('.facts .certification').text();
+        const time = $1('.facts .runtime').text()
         const genres = [];
         $1('span.genres').find('a').each((index, item) => {
           genres.push($1(item).text());
         });
 
-        items.push({ id: idCounter.current, title, picUrl, description, year, genres });
+        items.push({ id: idCounter.current, title, picUrl, description, year, genres, age , time});
       }
     }
 
