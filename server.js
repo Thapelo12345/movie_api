@@ -7,59 +7,68 @@ require('dotenv')
 
 app.use(express.json())
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 
 app.get('/', async (req, res) => {
   try {
-var id_counter = 0;
+    const idCounter = { current: 0 }; // Counter for unique IDs
+    const items = [];
 
-const itemObj = []
+    // Function to scrape a page
+    async function scrapePage(url) {
+      const response = await axios(url);
+      const html = response.data;
+      const $ = cheerio.load(html);
 
-    // Fetch the main page
-    const response = await axios('https://www.themoviedb.org/movie') 
-  
-    const html = response.data;
-    const $ = cheerio.load(html);
+      const anchors = $('div.card.style_1').find('a.image');
 
-    // Collect all anchor elements
-    const anchors = $('div.card.style_1').find('a.image');
+      for (let i = 0; i < anchors.length; i++) {
+        const element = anchors[i];
+        const movieUrl = 'https://www.themoviedb.org' + $(element).attr('href');
 
-    for (let i = 0; i < anchors.length; i++) {
-      const element = anchors[i];
-      const movieUrl = 'https://www.themoviedb.org' + $(element).attr('href');
+        // Fetch the individual movie page
+        await delay(500);
+        const response1 = await axios(movieUrl);
+        const html1 = response1.data;
 
-      // Fetch the second HTML page
-      await delay(500);
-      const response1 = await axios(movieUrl);
-      const html1 = response1.data;
+        const $1 = cheerio.load(html1);
+        idCounter.current++;
 
-      // Load the second HTML into Cheerio
-      const $1 = cheerio.load(html1);
+        const title = $1('h2 a').text();
+        const picUrl = $1('div.poster')
+          .find('div.image_content')
+          .find('div.blurred')
+          .find('img.poster.w-full')
+          .attr('src');
+        const description = $1('div.overview p').text();
+        const year = $1('h2 span.tag.release_date').text();
+        const genres = [];
+        $1('span.genres').find('a').each((index, item) => {
+          genres.push($1(item).text());
+        });
 
-      // Extract some data from the second page
-      let id = ++id_counter
-      let title = $1('h2 a').text()
-      const picUrl = $1('div.poster')
-      .find('div.image_content')
-      .find('div.blurred')
-      .find('img.poster.w-full')
-      .attr('src');
-      const description = $1('div.overview p').text()
+        items.push({ id: idCounter.current, title, picUrl, description, year, genres });
+      }
+    }
 
-      const year = $1('h2 span.tag.release_date').text()
-      const genres = []
-      $1('span.genres').find('a').each((index, item)=>{genres.push($1(item).text())})
+    // Scrape the first page
+    await scrapePage('https://www.themoviedb.org/movie');
 
-      itemObj.push({id, title, picUrl, description, year, genres})
+    // Scrape the second page
+    await scrapePage('https://www.themoviedb.org/movie?page=2');
 
-    }//end of 4 loop
-
-    res.json({ itemObj});
+    res.json({ items });
   } catch (error) {
     console.error('Error fetching movies:', error.message);
     res.status(500).json({ error: 'Failed to fetch movies' + error });
   }
-})//end of movies router
+});
+
+// Helper function for delays
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 
 const PORT = process.env.PORT || 5000
